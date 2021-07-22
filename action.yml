@@ -1,22 +1,33 @@
-name: 'Composite Run Steps Action Template'
+name: Increment database object snapshots
 
-description: 'Add description here'
+description: Creates or updates snapshots and puts them in the specified folder
 
 inputs:
-  input-1:
-    description: 'Add a description here'
+  db-name:
+    description: The name of the database to create the snapshots from.
     required: true
-
-outputs:
-  output-1:
-    description: 'Add description here'
-    value: '${{ steps.step_1.outputs.world }}'
-
+  instance-name:
+    description: The name of the database server instance. Most often this will follow the format <server name>,<port>.
+    required: true
+  snapshot-path:
+    description: The path where the snapshots will be outputted.
+    required: true
+  excluded-db-objects:
+    description: A comma separated list of db object names to exclude from the snapshots.
+  objects-to-increment:
+    description: A json string containing the list of database objects to take snapshots of.
+  
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: Step 1
-      id: step_1
-      shell: bash
+    - name: Create snapshots
+      shell: pwsh
       run: |
-        echo "::set-output name=hello::world"
+        $ExcludedDbObjects = "${{ inputs.excluded-db-objects }}" -split ","
+
+        ${{ github.action_path }}/scripts/take-snapshots.ps1 `
+        -dbName "${{ inputs.db-name }}" `
+        -instanceName "${{ inputs.instance-name }}" `
+        -snapshotPath "${{ inputs.snapshot-path }}" `
+        -excludedDbObjects $ExcludedDbObjects `
+        -objectsToIncrement "${{ inputs.objects-to-increment }}"
