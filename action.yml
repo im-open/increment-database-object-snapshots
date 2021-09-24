@@ -30,4 +30,4 @@ runs:
         -instanceName "${{ inputs.instance-name }}" `
         -snapshotPath "${{ inputs.snapshot-path }}" `
         -excludedDbObjects $ExcludedDbObjects `
-        -objectsToIncrement "${{ inputs.objects-to-increment }}"
+        -objectsToIncrement '${{ inputs.objects-to-increment }}'
