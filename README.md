@@ -90,7 +90,7 @@ jobs:
           echo "::set-output name=json::$objectsAsJson"
 
       - name: Increment snapshots
-        uses: im-open/increment-database-object-snapshots@v1.0.0
+        uses: im-open/increment-database-object-snapshots@v1.0.1
         with:
           db-name: LocalDB
           instance-name: localhost,1433
