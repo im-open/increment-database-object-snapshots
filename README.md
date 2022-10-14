@@ -62,16 +62,16 @@ jobs:
   job1:
     runs-on: [self-hosted]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Flyway
-        uses: im-open/setup-flyway@v1.0.1
+        uses: im-open/setup-flyway@v1.1.0
         with:
           version: 7.2.0
 
       # Build the database so it can be used to create snapshots from
       - name: Build Database
-        uses: im-open/build-database-ci-action@v2.0.1
+        uses: im-open/build-database-ci-action@v3.0.3
         with:
           db-server-name: localhost
           db-name: LocalDB
@@ -99,7 +99,7 @@ jobs:
           echo "::set-output name=json::$objectsAsJson"
 
       - name: Increment snapshots
-        uses: im-open/increment-database-object-snapshots@v1.0.2
+        uses: im-open/increment-database-object-snapshots@v1.0.3
         with:
           db-name: LocalDB
           instance-name: localhost,1433
