@@ -12,18 +12,19 @@ A GitHub Action that creates or updates snapshot files for database objects. The
 - [License](#license)
 
 **Example snapshot**
+
 ```sql
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SomeTable](
-	[id] [int] NOT NULL,
-	[anotherProperty] [int] NOT NULL,
+ [id] [int] NOT NULL,
+ [anotherProperty] [int] NOT NULL,
  CONSTRAINT [PK_SomeTable] PRIMARY KEY CLUSTERED 
 (
-	[id] ASC,
-	[anotherProperty] ASC
+ [id] ASC,
+ [anotherProperty] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -31,13 +32,13 @@ ALTER AUTHORIZATION ON [dbo].[SomeTable] TO  SCHEMA OWNER
 GO
 CREATE NONCLUSTERED INDEX [NCIX_SomeTable_anotherProperty] ON [dbo].[SomeTable]
 (
-	[anotherProperty] ASC
+ [anotherProperty] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 ```
-    
 
 ## Inputs
+
 | Parameter              | Is Required | Description                                                                                                                                     |
 | ---------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `db-name`              | true        | The name of the database to get the snapshots from.                                                                                             |
@@ -47,13 +48,15 @@ GO
 | `objects-to-increment` | false       | A json string containing the list of database objects to take snapshots of. See below for the shape of the objects that should be in the array. |
 
 **objects-to-increment shape**
+
 ```json
 [{"objectName":"SomeTable","schemaName":"dbo","operationType":"I","objectType":"Tables"},{"objectName":"AnotherTable","schemaName":"dbo","operationType":"I","objectType":"Tables"}]
 ```
-* `objectName`: The name of the object. E.g. table name, view name, etc.
-* `schemaName`: The name of the schema. E.g. dbo, MyCustomSchema etc.
-* `objectType`: The type of object. This should be one of `Tables`, `Views`, `StoredProcedures`, `Sequences`, `UserDefinedFunctions`, or `Synonyms`.
-* `operationType`: The operation that was performed on the object. This needs to be one of `U` (Updated), `I` (Initialized/Newly Created), or `D` (Deleted).
+
+- `objectName`: The name of the object. E.g. table name, view name, etc.
+- `schemaName`: The name of the schema. E.g. dbo, MyCustomSchema etc.
+- `objectType`: The type of object. This should be one of `Tables`, `Views`, `StoredProcedures`, `Sequences`, `UserDefinedFunctions`, or `Synonyms`.
+- `operationType`: The operation that was performed on the object. This needs to be one of `U` (Updated), `I` (Initialized/Newly Created), or `D` (Deleted).
 
 ## Example
 
@@ -65,13 +68,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install Flyway
-        uses: im-open/setup-flyway@v1.1.0
+        uses: im-open/setup-flyway@v1
         with:
           version: 7.2.0
 
       # Build the database so it can be used to create snapshots from
       - name: Build Database
-        uses: im-open/build-database-ci-action@v3.0.3
+        uses: im-open/build-database-ci-action@v3
         with:
           db-server-name: localhost
           db-name: LocalDB
@@ -99,14 +102,14 @@ jobs:
           echo "::set-output name=json::$objectsAsJson"
 
       - name: Increment snapshots
-        uses: im-open/increment-database-object-snapshots@v1.0.3
+        # You may also reference the major or major.minor version
+        uses: im-open/increment-database-object-snapshots@v1.0.4
         with:
           db-name: LocalDB
           instance-name: localhost,1433
           snapshot-path: ./snapshots
           objects-to-increment: "${{ steps.changed-objects.outputs.json }}"
 ```
-
 
 ## Contributing
 
