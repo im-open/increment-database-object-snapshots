@@ -99,7 +99,7 @@ jobs:
           $mappedObjects = $changedObjects | foreach-object { @{ schemaName=$_.schemaName, objectName=$_.objectName, objectType=$_.objectType, operationType=$_.operationType } }
           $objectsAsJson = $mappedObjects | ConvertTo-Json -Compress
 
-          echo "::set-output name=json::$objectsAsJson"
+          echo "json=$objectsAsJson" >> $GITHUB_OUTPUT
 
       - name: Increment snapshots
         # You may also reference the major or major.minor version
